@@ -99,7 +99,13 @@ fun buildRoutes (chromosome: IntArray, tasks: List<TaskGene>, performers: List<U
         }
 
         if (!added) {
-            val newRoute = Route(mutableListOf(), mutableListOf(), performers[routes.size])
+            val performer = if (routes.size < performers.size) {
+                performers[routes.size]
+            } else {
+                UUID(0,0)
+            }
+
+            val newRoute = Route(mutableListOf(), mutableListOf(), performer)
             newRoute.taskRoute.add(gene)
             newRoute.eta.add(tasks[gene].startTimeOffset)
             routes.add(newRoute)
