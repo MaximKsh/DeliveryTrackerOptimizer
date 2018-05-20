@@ -89,7 +89,7 @@ class DTAlgorithmProvider : AlgorithmProvider() {
         val population = NondominatedSortingPopulation()
         var selection: TournamentSelection? = null
         if (properties.getBoolean("withReplacement", true)) {
-            selection = TournamentSelection(2, ChainedComparator(*arrayOf(ParetoDominanceComparator(), CrowdingComparator())))
+            selection = TournamentSelection(2, ChainedComparator(ParetoDominanceComparator(), CrowdingComparator()))
         }
 
         val variation = OperatorFactory.getInstance().getVariation(null as String?, properties, problem)
@@ -100,15 +100,15 @@ class DTAlgorithmProvider : AlgorithmProvider() {
         val populationSize = properties.getDouble("populationSize", 100.0).toInt()
         val weights = properties.getDoubleArray("weights", doubleArrayOf(1.0))
         val method = properties.getString("method", "linear")
-        var comparator: AggregateObjectiveComparator? = null
-        if (method.equals("linear", ignoreCase = true)) {
-            comparator = LinearDominanceComparator(*weights)
+        val comparator: AggregateObjectiveComparator?
+        comparator = if (method.equals("linear", ignoreCase = true)) {
+            LinearDominanceComparator(*weights)
         } else {
             if (!method.equals("min-max", ignoreCase = true)) {
                 throw FrameworkException("unrecognized weighting method: $method")
             }
 
-            comparator = MinMaxDominanceComparator(*weights)
+            MinMaxDominanceComparator(*weights)
         }
 
         val initialization = DistinctRandomInitialization(problem, populationSize)

@@ -1,6 +1,7 @@
 package com.kvteam.deliverytracker
 
 import org.moeaframework.Executor
+import org.moeaframework.algorithm.StandardAlgorithms
 import org.moeaframework.core.NondominatedPopulation
 import org.moeaframework.core.Solution
 import org.moeaframework.core.variable.EncodingUtils
@@ -13,7 +14,7 @@ fun processResult (result: NondominatedPopulation, tasks: List<TaskGene>, perfor
     var bestSolution: Solution? = null
 
     for (solution in result) {
-        if (solution.getObjective(1) < bestSolution?.getObjective(1) ?: MaxValue) {
+        if (solution.getObjective(2) < bestSolution?.getObjective(2) ?: MaxValue) {
             bestSolution = solution
         }
     }

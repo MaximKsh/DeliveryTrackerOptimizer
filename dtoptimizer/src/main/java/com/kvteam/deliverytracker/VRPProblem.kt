@@ -74,5 +74,5 @@ class VRPProblem (
         return set.size == chromosome.size
     }
 
-    fun divideIntoRoutes(chromosome: IntArray) = buildRoutes(chromosome, tasks, performers, weightMatrix)
+    private fun divideIntoRoutes(chromosome: IntArray) = buildRoutes(chromosome, tasks, performers, weightMatrix)
 }

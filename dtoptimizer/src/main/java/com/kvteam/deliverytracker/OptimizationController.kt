@@ -38,10 +38,11 @@ class OptimizationController {
             cnt++
             val result = runEMOEA(problem)
             route = processResult(result, tasks, performers, weights)
-            if (route != null) {
-                cnt = 3
+            if (route == null) {
                 iterations *= 2
                 populationSize += 50
+            } else {
+                cnt = 3
             }
         }
 
