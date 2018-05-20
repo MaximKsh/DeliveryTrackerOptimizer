@@ -10,7 +10,8 @@ import java.util.*
 class VRPProblem (
         private val performers: List<UUID>,
         private val tasks: List<TaskGene>,
-        private val weightMatrix: Array<Array<Int>>
+        private val weightMatrix: Array<Array<Int>>,
+        private val keepPerformers: Boolean
 ): AbstractProblem(tasks.size, 3) {
     override fun newSolution(): Solution {
         val solution = Solution(numberOfVariables, numberOfObjectives)
@@ -59,20 +60,11 @@ class VRPProblem (
             return false
         }
 
-        // Не переназначаются таски на другого
-        for ((i, route) in routes.withIndex()) {
-            for (vertex in route.taskRoute) {
-                val perfId = tasks[vertex].performerId
-                if (perfId != null
-                        && perfId != performers[i]) {
-                    return false
-                }
-            }
-        }
-
+        // каждый посещен один раз
         val set = chromosome.toHashSet()
         return set.size == chromosome.size
     }
 
-    private fun divideIntoRoutes(chromosome: IntArray) = buildRoutes(chromosome, tasks, performers, weightMatrix)
+    private fun divideIntoRoutes(chromosome: IntArray) =
+            buildRoutes(chromosome, tasks, performers, weightMatrix, keepPerformers)
 }

@@ -1,4 +1,6 @@
 package com.kvteam.deliverytracker
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -7,6 +9,14 @@ import org.springframework.web.bind.annotation.RestController
 @Suppress("unused")
 @RestController
 class OptimizationController {
+
+    @Value("\${try_keep_performers:false}")
+    var tryKeepPerformers: String = "false"
+
+    @GetMapping("/")
+    fun abc () : String{
+        return tryKeepPerformers
+    }
 
     @PostMapping("/")
     fun optimize(@RequestBody request: OptimizationRequest): OptimizationResponse {
@@ -27,8 +37,8 @@ class OptimizationController {
             }
             tasks.add(TaskGene(requestTask.taskId!!, requestTask.performerId, requestTask.startTimeOffset!!, requestTask.endTimeOffset!!))
         }
-
-        val problem = createProblem(tasks, performers, weights)
+        val keepPerformers = tryKeepPerformers == "true"
+        val problem = createProblem(tasks, performers, weights, keepPerformers)
 
         var iterations = 2500
         var populationSize = 200
@@ -37,7 +47,7 @@ class OptimizationController {
         while (cnt < 3) {
             cnt++
             val result = runEMOEA(problem)
-            route = processResult(result, tasks, performers, weights)
+            route = processResult(result, tasks, performers, weights, keepPerformers)
             if (route == null) {
                 iterations *= 2
                 populationSize += 50
